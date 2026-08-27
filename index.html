@@ -61,6 +61,12 @@
       align-items:center; color:#90a5bc; display:flex; font-family:var(--mono);
       font-size:.88rem; gap:8px; letter-spacing:.12em; white-space:nowrap;
     }
+    .topbar-meta { align-items:center; display:flex; gap:clamp(12px,2vw,24px) }
+    .visitor-chip {
+      align-items:center; display:flex; height:20px; justify-content:flex-end;
+      min-width:34px; overflow:hidden;
+    }
+    .visitor-chip img { display:block; height:20px; max-width:none }
     .status-dot {
       background:#7ed3ff; border-radius:50%; box-shadow:0 0 12px rgba(126,211,255,.85);
       height:6px; width:6px;
@@ -224,6 +230,8 @@
     @media (max-width:600px) {
       .app-frame { gap:4px; grid-template-rows:clamp(35px,5.6vh,44px) minmax(0,1fr); padding:4px 5px }
       .status-chip { display:none }
+      .topbar-meta { gap:0 }
+      .visitor-chip,.visitor-chip img { height:18px }
       .calculator-shell { padding:clamp(7px,1.3vh,11px) 8px 6px }
       .section-kicker { font-size:.68rem }
       h1 { font-size:clamp(1.65rem,4.5vh,2.15rem) }
@@ -253,6 +261,10 @@
       .zero-note { font-size:.65rem; padding:4px }
       .address-grid { height:clamp(100px,17.5vh,148px) }
       .address-button { font-size:clamp(.76rem,3.4vw,1rem) }
+    }
+    @media (max-width:430px) {
+      .wordmark > span:last-child { font-size:0 }
+      .wordmark > span:last-child::after { content:"MR52"; font-size:.82rem }
     }
     @media (max-height:560px) {
       .app-frame { gap:3px; grid-template-rows:32px minmax(0,1fr); padding-block:3px }
@@ -293,7 +305,15 @@
       <div class="wordmark" aria-label="MR52 address instrument">
         <span class="wordmark-mark">M</span><span>MR52 / ADDRESS INSTRUMENT</span>
       </div>
-      <span class="status-chip"><span class="status-dot"></span>LIVE CALCULATION</span>
+      <div class="topbar-meta">
+        <span class="visitor-chip" aria-label="Public visitor count">
+          <img
+            src="https://vbr.nathanchung.dev/badge?page_id=security-circuit-mr52-calculator&amp;text=_&amp;color=050b13&amp;lcolor=050b13&amp;style=flat-square&amp;custom=CNT"
+            alt="Visitor count"
+          >
+        </span>
+        <span class="status-chip"><span class="status-dot"></span>LIVE CALCULATION</span>
+      </div>
     </nav>
     <section class="calculator-shell" id="calculator" aria-labelledby="page-title">
       <div class="calculator-heading">
@@ -431,3 +451,4 @@
   </script>
 </body>
 </html>
+
