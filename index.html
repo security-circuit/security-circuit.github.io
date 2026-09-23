@@ -61,12 +61,6 @@
       align-items:center; color:#90a5bc; display:flex; font-family:var(--mono);
       font-size:.88rem; gap:8px; letter-spacing:.12em; white-space:nowrap;
     }
-    .topbar-meta { align-items:center; display:flex; gap:clamp(12px,2vw,24px) }
-    .visitor-chip {
-      align-items:center; display:flex; height:20px; justify-content:flex-end;
-      min-width:34px; overflow:hidden;
-    }
-    .visitor-chip img { display:block; height:20px; max-width:none }
     .status-dot {
       background:#7ed3ff; border-radius:50%; box-shadow:0 0 12px rgba(126,211,255,.85);
       height:6px; width:6px;
@@ -74,7 +68,7 @@
     .calculator-shell {
       background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 28%),rgba(7,14,24,.94);
       border:1px solid var(--line); box-shadow:0 30px 80px rgba(0,0,0,.34);
-      display:grid; grid-template-rows:auto minmax(0,1fr) auto; height:100%;
+      display:grid; grid-template-rows:auto minmax(0,1fr) auto auto; height:100%;
       min-height:0; overflow:hidden;
       padding:clamp(9px,2vh,22px) clamp(9px,2vw,26px) clamp(7px,1.4vh,14px);
     }
@@ -227,11 +221,14 @@
       color:var(--blue-bright); text-shadow:0 0 14px rgba(121,199,255,.75);
     }
     .address-button.is-selected::after { transform:translateX(-50%) scaleX(1) }
+    .site-footer {
+      border-top:1px solid var(--line); color:#5f738a; font-family:var(--mono);
+      font-size:clamp(.6rem,1vw,.78rem); letter-spacing:.08em;
+      padding-top:clamp(4px,.7vh,7px); text-align:center;
+    }
     @media (max-width:600px) {
       .app-frame { gap:4px; grid-template-rows:clamp(35px,5.6vh,44px) minmax(0,1fr); padding:4px 5px }
       .status-chip { display:none }
-      .topbar-meta { gap:0 }
-      .visitor-chip,.visitor-chip img { height:18px }
       .calculator-shell { padding:clamp(7px,1.3vh,11px) 8px 6px }
       .section-kicker { font-size:.68rem }
       h1 { font-size:clamp(1.65rem,4.5vh,2.15rem) }
@@ -288,6 +285,7 @@
       .address-panel { padding-top:4px }
       .address-label { margin-bottom:3px }
       .address-grid { height:72px }
+      .site-footer { font-size:.55rem; padding-top:2px }
     }
     @media (max-height:560px) and (min-width:650px) {
       .address-grid { grid-template-columns:repeat(11,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)) }
@@ -305,15 +303,7 @@
       <div class="wordmark" aria-label="MR52 address instrument">
         <span class="wordmark-mark">M</span><span>MR52 / ADDRESS INSTRUMENT</span>
       </div>
-      <div class="topbar-meta">
-        <span class="visitor-chip" aria-label="Public visitor count">
-          <img
-            src="https://vbr.nathanchung.dev/badge?page_id=security-circuit-mr52-calculator&amp;text=_&amp;color=050b13&amp;lcolor=050b13&amp;style=flat-square&amp;custom=CNT"
-            alt="Visitor count"
-          >
-        </span>
-        <span class="status-chip"><span class="status-dot"></span>LIVE CALCULATION</span>
-      </div>
+      <span class="status-chip"><span class="status-dot"></span>LIVE CALCULATION</span>
     </nav>
     <section class="calculator-shell" id="calculator" aria-labelledby="page-title">
       <div class="calculator-heading">
@@ -357,6 +347,9 @@
         </div>
         <div class="address-grid" id="address-grid"></div>
       </section>
+      <footer class="site-footer">
+        © <span id="copyright-year">2026</span> Andrew Chang
+      </footer>
     </section>
   </main>
   <script>
@@ -447,8 +440,8 @@
       });
     }
 
+    document.querySelector("#copyright-year").textContent = String(new Date().getFullYear());
     render();
   </script>
 </body>
 </html>
-
