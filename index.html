@@ -3,445 +3,111 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#050b13">
-  <meta name="description" content="Interactive Mercury MR52 DIP switch address calculator for addresses 1 through 31.">
-  <title>MR52 Address Calculator</title>
+  <meta name="theme-color" content="#060a10">
+  <meta name="description" content="Address calculator directory for Mercury MR52 and NLC Life Safety Panel DIP switch calculators.">
+  <title>Panel Address Calculators</title>
   <style>
     :root {
-      --ink:#f4f8ff; --muted:#8799ae; --navy:#050b13;
-      --line:rgba(151,187,228,.18); --blue:#79c7ff; --blue-bright:#b5e4ff;
-      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+      --ink:#f5f8fc; --muted:#8d9bab; --panel:#0a1018; --line:rgba(161,184,211,.18);
+      --blue:#79c7ff; --red:#ff5965; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
       --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
     * { box-sizing:border-box }
-    html,body { height:100%; width:100%; overflow:hidden; overscroll-behavior:none }
-    html { background:var(--navy) }
+    html,body { height:100%; margin:0; overflow:hidden }
     body {
-      color:var(--ink); margin:0; min-width:280px; font-family:var(--sans);
+      color:var(--ink); font-family:var(--sans); min-width:280px;
       background:
-        linear-gradient(rgba(80,126,179,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(80,126,179,.035) 1px,transparent 1px),#050b13;
-      background-size:42px 42px;
+        radial-gradient(circle at 14% 14%,rgba(61,142,255,.12),transparent 34%),
+        radial-gradient(circle at 86% 86%,rgba(255,61,78,.11),transparent 36%),
+        linear-gradient(rgba(120,150,185,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(120,150,185,.035) 1px,transparent 1px),#060a10;
+      background-size:auto,auto,42px 42px,42px 42px;
     }
-    button { color:inherit; font:inherit; -webkit-tap-highlight-color:transparent }
-    button:focus-visible { outline:2px solid var(--blue-bright); outline-offset:2px }
-    h1,h3,p { margin-top:0 }
-    .app-frame {
-      display:grid; gap:clamp(5px,1vh,10px);
-      grid-template-rows:clamp(38px,6.2vh,56px) minmax(0,1fr);
-      height:100dvh; max-height:100dvh; min-height:0; overflow:hidden;
-      padding:clamp(5px,1.5vh,14px) clamp(7px,1.4vw,18px); position:relative;
+    a { color:inherit; text-decoration:none }
+    a:focus-visible { outline:2px solid #fff; outline-offset:4px }
+    .frame {
+      display:grid; grid-template-rows:auto minmax(0,1fr) auto; gap:clamp(12px,2.5vh,26px);
+      height:100dvh; max-width:1100px; margin:auto; overflow:hidden;
+      padding:clamp(16px,3.5vh,38px) clamp(16px,4vw,44px) clamp(12px,2.4vh,24px);
     }
-    .ambient { border-radius:999px; pointer-events:none; position:absolute }
-    .ambient-one {
-      background:radial-gradient(circle,rgba(46,122,255,.16),transparent 68%);
-      height:min(60vw,42rem); right:-14rem; top:-14rem; width:min(60vw,42rem);
+    .topbar { align-items:center; display:flex; justify-content:space-between; min-width:0 }
+    .brand { align-items:center; display:flex; font-family:var(--mono); font-weight:700; gap:10px; letter-spacing:.12em }
+    .brand-mark {
+      align-items:center; background:linear-gradient(145deg,#fff,#7f91a6 58%,#eaf2fa); border-radius:50%;
+      color:#07101a; display:flex; height:30px; justify-content:center; letter-spacing:0; width:30px;
     }
-    .ambient-two {
-      background:radial-gradient(circle,rgba(110,203,255,.08),transparent 70%);
-      bottom:-17rem; height:34rem; left:-17rem; width:34rem;
+    .status { color:var(--muted); font-family:var(--mono); font-size:.76rem; letter-spacing:.12em }
+    .hero { align-self:center; min-height:0 }
+    .eyebrow { color:#9aabba; font-family:var(--mono); font-size:clamp(.72rem,1.35vw,.9rem); letter-spacing:.18em; margin:0 0 8px }
+    h1 { font-size:clamp(2.15rem,6vw,4.8rem); font-weight:480; letter-spacing:-.055em; line-height:.92; margin:0 }
+    .intro { color:var(--muted); font-size:clamp(.95rem,1.7vw,1.18rem); line-height:1.5; margin:12px 0 clamp(16px,3.5vh,34px); max-width:650px }
+    .directory { display:grid; gap:clamp(10px,2vw,18px); grid-template-columns:repeat(2,minmax(0,1fr)) }
+    .tool-card {
+      background:linear-gradient(145deg,rgba(255,255,255,.045),transparent 36%),rgba(9,15,23,.92);
+      border:1px solid var(--line); display:grid; min-height:clamp(168px,28vh,248px); overflow:hidden;
+      padding:clamp(17px,3vw,30px); position:relative; transition:transform 160ms ease,border-color 160ms ease;
     }
-    .topbar,.calculator-shell { margin-inline:auto; max-width:1180px; position:relative; width:100% }
-    .topbar {
-      align-items:center; border-bottom:1px solid var(--line); display:flex;
-      height:100%; justify-content:space-between; min-width:0;
+    .tool-card::before { content:""; height:3px; left:0; position:absolute; top:0; width:100%; transform:scaleX(.18); transform-origin:left; transition:transform 180ms ease }
+    .tool-card:hover { transform:translateY(-3px) }
+    .tool-card:hover::before { transform:scaleX(1) }
+    .tool-card.mercury:hover { border-color:rgba(121,199,255,.55) }
+    .tool-card.life:hover { border-color:rgba(255,89,101,.62) }
+    .tool-card.mercury::before { background:var(--blue) }
+    .tool-card.life::before { background:var(--red) }
+    .card-top { align-items:center; display:flex; justify-content:space-between }
+    .card-id { font-family:var(--mono); font-size:.72rem; letter-spacing:.16em }
+    .mercury .card-id,.mercury .card-arrow { color:var(--blue) }
+    .life .card-id,.life .card-arrow { color:var(--red) }
+    .card-arrow { font-size:1.55rem; line-height:1 }
+    .card-copy { align-self:end }
+    h2 { font-size:clamp(1.35rem,3.1vw,2.2rem); font-weight:520; letter-spacing:-.035em; margin:0 0 7px }
+    .card-copy p { color:var(--muted); font-size:clamp(.83rem,1.45vw,1rem); line-height:1.4; margin:0 }
+    footer { border-top:1px solid var(--line); color:#667789; font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; padding-top:10px; text-align:center }
+    @media (max-width:620px) {
+      .frame { gap:10px; padding:12px 10px 9px }
+      .status { display:none }
+      .hero { width:100% }
+      h1 { font-size:clamp(2rem,10vw,3.2rem) }
+      .intro { font-size:.9rem; margin:8px 0 12px }
+      .directory { grid-template-columns:1fr; gap:8px }
+      .tool-card { min-height:clamp(126px,22vh,176px); padding:14px 16px }
+      h2 { font-size:clamp(1.3rem,6vw,1.8rem) }
     }
-    .wordmark {
-      align-items:center; color:#cad7e6; display:flex; font-family:var(--mono);
-      font-size:clamp(.85rem,1.7vw,1.1rem); font-weight:700; gap:10px;
-      letter-spacing:.13em; min-width:0; white-space:nowrap;
+    @media (max-height:610px) {
+      .frame { gap:7px; padding-block:8px 6px }
+      .brand-mark { height:24px; width:24px }
+      .eyebrow { margin-bottom:4px }
+      .intro { margin:5px 0 9px }
+      .tool-card { min-height:108px; padding:11px 14px }
+      .card-copy p { display:none }
+      footer { padding-top:5px }
     }
-    .wordmark-mark {
-      align-items:center; background:linear-gradient(145deg,#f7fbff,#72849b 58%,#dbe8f7);
-      border-radius:50%; color:#07101b; display:flex; flex:0 0 auto; font-family:var(--sans);
-      font-size:1.03rem; height:clamp(21px,3.4vh,27px); justify-content:center;
-      letter-spacing:0; width:clamp(21px,3.4vh,27px);
-    }
-    .status-chip {
-      align-items:center; color:#90a5bc; display:flex; font-family:var(--mono);
-      font-size:.88rem; gap:8px; letter-spacing:.12em; white-space:nowrap;
-    }
-    .status-dot {
-      background:#7ed3ff; border-radius:50%; box-shadow:0 0 12px rgba(126,211,255,.85);
-      height:6px; width:6px;
-    }
-    .calculator-shell {
-      background:linear-gradient(145deg,rgba(255,255,255,.035),transparent 28%),rgba(7,14,24,.94);
-      border:1px solid var(--line); box-shadow:0 30px 80px rgba(0,0,0,.34);
-      display:grid; grid-template-rows:auto minmax(0,1fr) auto auto; height:100%;
-      min-height:0; overflow:hidden;
-      padding:clamp(9px,2vh,22px) clamp(9px,2vw,26px) clamp(7px,1.4vh,14px);
-    }
-    .calculator-heading {
-      align-items:center; border-bottom:1px solid var(--line); display:flex;
-      justify-content:space-between; min-width:0; padding-bottom:clamp(7px,1.4vh,14px);
-    }
-    .title-block { min-width:0 }
-    .section-kicker,.panel-label p {
-      color:var(--blue); font-family:var(--mono); font-size:clamp(.74rem,1.38vw,.98rem);
-      letter-spacing:.16em;
-    }
-    .section-kicker { margin-bottom:3px }
-    h1 {
-      font-size:clamp(1.95rem,4.8vh,3.3rem); font-weight:470; letter-spacing:-.045em;
-      line-height:1; margin-bottom:4px;
-    }
-    .calculator-subtitle {
-      color:var(--muted); font-size:clamp(.9rem,1.7vw,1.2rem); line-height:1.35; margin-bottom:0;
-    }
-    .reset-button {
-      background:transparent; border:1px solid var(--line); cursor:pointer; flex:0 0 auto;
-      font-family:var(--mono); font-size:clamp(.75rem,1.22vw,.94rem); letter-spacing:.12em;
-      margin-left:16px; padding:clamp(7px,1.2vh,11px) clamp(9px,1vw,14px); white-space:nowrap;
-    }
-    .reset-button:hover { border-color:rgba(121,199,255,.55); color:var(--blue) }
-    .calculator-grid {
-      display:grid; grid-template-columns:minmax(0,1.17fr) minmax(220px,.83fr); min-height:0;
-    }
-    .control-panel,.result-panel {
-      display:flex; flex-direction:column; justify-content:center; min-height:0;
-      min-width:0; padding-block:clamp(8px,2vh,22px);
-    }
-    .control-panel { border-right:1px solid var(--line); padding-right:clamp(10px,2.3vw,34px) }
-    .result-panel { padding-left:clamp(10px,2.3vw,34px) }
-    .panel-label {
-      align-items:center; display:flex; gap:clamp(7px,1vw,13px);
-      margin-bottom:clamp(6px,1.4vh,14px); min-width:0;
-    }
-    .panel-label p { margin-bottom:2px }
-    h3 {
-      font-size:clamp(1.38rem,3vh,1.81rem); font-weight:470; letter-spacing:-.02em;
-      line-height:1.05; margin-bottom:0; white-space:nowrap;
-    }
-    .dip-device {
-      background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 30%),#080e16;
-      border:1px solid rgba(160,186,215,.24); border-radius:6px;
-      box-shadow:0 18px 40px rgba(0,0,0,.32),inset 0 0 0 3px rgba(255,255,255,.015);
-      min-height:0; padding:clamp(7px,1.4vh,13px) clamp(8px,1.5vw,17px);
-    }
-    .dip-device-header,.dip-device-footer {
-      color:#7890a8; display:flex; font-family:var(--mono);
-      font-size:clamp(.65rem,1.12vw,.81rem); justify-content:space-between; letter-spacing:.13em;
-    }
-    .dip-device-header { border-bottom:1px solid rgba(137,164,194,.14); padding-bottom:clamp(5px,.9vh,9px) }
-    .dip-device-footer { border-top:1px solid rgba(137,164,194,.14); padding-top:clamp(5px,.9vh,9px) }
-    .dip-bank {
-      display:grid; gap:clamp(4px,1vw,10px); grid-template-columns:repeat(5,minmax(0,1fr));
-      padding:clamp(6px,1.3vh,13px) 0;
-    }
-    .dip-control {
-      align-items:center; background:#101925; border:1px solid rgba(149,176,205,.15);
-      border-radius:3px; cursor:pointer; display:flex; flex-direction:column;
-      gap:clamp(3px,.7vh,7px); min-width:0; padding:clamp(4px,.8vh,8px) 4px;
-    }
-    .dip-control:hover { border-color:rgba(121,199,255,.55) }
-    .switch-number,.switch-weight { font-family:var(--mono) }
-    .switch-number { color:#b8c4d2; font-size:clamp(.75rem,1.38vw,1rem) }
-    .switch-weight { color:#5f738a; font-size:clamp(.68rem,1.15vw,.88rem) }
-    .switch-track {
-      background:linear-gradient(90deg,#020508,#111b27 50%,#020508); border:1px solid #010305;
-      box-shadow:inset 0 2px 6px #000; display:block; height:clamp(42px,9.5vh,70px);
-      max-width:32px; position:relative; width:min(78%,32px);
-    }
-    .switch-thumb {
-      background:linear-gradient(165deg,#f1f5f8 2%,#798897 34%,#d4dce3 51%,#526170 100%);
-      border-radius:2px; bottom:4px; box-shadow:0 5px 7px rgba(0,0,0,.7);
-      height:clamp(17px,3.4vh,25px); left:4px; position:absolute;
-      transition:bottom 180ms ease,top 180ms ease,box-shadow 180ms ease;
-      width:calc(100% - 8px);
-    }
-    .dip-control.is-on {
-      background:linear-gradient(180deg,rgba(50,124,255,.18),#101925 45%);
-      border-color:rgba(103,184,255,.58);
-    }
-    .dip-control.is-on .switch-thumb {
-      bottom:auto; box-shadow:0 0 14px rgba(105,198,255,.42),0 4px 7px rgba(0,0,0,.6); top:4px;
-    }
-    .dip-control.is-on .switch-number,.dip-control.is-on .switch-weight { color:var(--blue-bright) }
-    .touch-hint { color:#728399; font-size:clamp(.78rem,1.38vw,1.06rem); margin:clamp(5px,1vh,10px) 0 0 }
-    .result-topline {
-      color:#73879e; display:flex; font-family:var(--mono); font-size:clamp(.68rem,1.1vw,.84rem);
-      justify-content:space-between; letter-spacing:.13em;
-    }
-    .result-mode,.equation-total { color:var(--blue) }
-    .result-number {
-      background:linear-gradient(180deg,#eaf8ff,#67b9f1 68%,#1e6ac9);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      font-family:var(--mono); font-size:min(22vh,14vw); font-weight:300;
-      letter-spacing:-.12em; line-height:.82; margin:clamp(8px,2vh,20px) 0 clamp(8px,1.6vh,16px) -.08em;
-      text-shadow:0 0 55px rgba(58,146,255,.12);
-    }
-    .result-equation {
-      align-items:baseline; border-bottom:1px solid var(--line); border-top:1px solid var(--line);
-      display:grid; gap:4px; grid-template-columns:minmax(0,1fr) auto;
-      padding:clamp(7px,1.3vh,12px) 0;
-    }
-    .equation-label {
-      color:#667b92; font-family:var(--mono); font-size:clamp(.65rem,1.08vw,.78rem);
-      grid-column:1/-1; letter-spacing:.13em;
-    }
-    .result-equation strong,.equation-total {
-      font-family:var(--mono); font-size:clamp(.88rem,1.7vw,1.28rem);
-      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    }
-    .binary-row {
-      display:grid; gap:clamp(8px,1.6vw,18px); grid-template-columns:1fr 1fr;
-      padding-top:clamp(7px,1.3vh,12px);
-    }
-    .binary-row div { display:flex; flex-direction:column; gap:3px; min-width:0 }
-    .binary-row span {
-      color:#667b92; font-family:var(--mono); font-size:clamp(.62rem,1.02vw,.76rem); letter-spacing:.12em;
-    }
-    .binary-row strong {
-      color:#c4d4e3; font-family:var(--mono); font-size:clamp(.82rem,1.44vw,1.12rem); white-space:nowrap;
-    }
-    .zero-note {
-      background:rgba(121,199,255,.07); border-left:2px solid var(--blue); color:#9fb2c6;
-      display:none; font-size:clamp(.7rem,1.25vw,.98rem); margin:clamp(5px,.8vh,8px) 0 0; padding:5px 7px;
-    }
-    .zero-note.is-visible { display:block }
-    .address-panel { border-top:1px solid var(--line); min-height:0; padding-top:clamp(6px,1.3vh,13px) }
-    .address-label { margin-bottom:clamp(5px,.8vh,9px) }
-    .address-grid {
-      background:var(--line); border:1px solid var(--line); display:grid; gap:1px;
-      grid-template-columns:repeat(8,minmax(0,1fr)); grid-template-rows:repeat(4,minmax(0,1fr));
-      height:clamp(88px,18vh,156px); min-height:0;
-    }
-    .address-button {
-      background:#09121e; border:0; color:#8699ad; cursor:pointer; font-family:var(--mono);
-      font-size:clamp(.81rem,1.52vw,1.12rem); min-height:0; min-width:0; padding:0; position:relative;
-    }
-    .address-button::after {
-      background:var(--blue); bottom:0; content:""; height:2px; left:50%; position:absolute;
-      transform:translateX(-50%) scaleX(0); transition:transform 160ms ease; width:42%;
-    }
-    .address-button:hover { background:#0d1b2b; color:#dceeff }
-    .address-button.is-selected {
-      background:radial-gradient(circle at center,rgba(74,161,255,.25),transparent 72%),#0b1a2a;
-      color:var(--blue-bright); text-shadow:0 0 14px rgba(121,199,255,.75);
-    }
-    .address-button.is-selected::after { transform:translateX(-50%) scaleX(1) }
-    .site-footer {
-      border-top:1px solid var(--line); color:#5f738a; font-family:var(--mono);
-      font-size:clamp(.6rem,1vw,.78rem); letter-spacing:.08em;
-      padding-top:clamp(4px,.7vh,7px); text-align:center;
-    }
-    @media (max-width:600px) {
-      .app-frame { gap:4px; grid-template-rows:clamp(35px,5.6vh,44px) minmax(0,1fr); padding:4px 5px }
-      .status-chip { display:none }
-      .calculator-shell { padding:clamp(7px,1.3vh,11px) 8px 6px }
-      .section-kicker { font-size:.68rem }
-      h1 { font-size:clamp(1.65rem,4.5vh,2.15rem) }
-      .calculator-subtitle { display:none }
-      .reset-button { font-size:.7rem; margin-left:8px; padding:6px 7px }
-      .calculator-grid { grid-template-columns:minmax(0,1.35fr) minmax(92px,.65fr) }
-      .control-panel { padding-right:7px }
-      .result-panel { padding-left:7px }
-      .panel-label { gap:5px }
-      .panel-label p { display:none }
-      h3 { font-size:clamp(1.02rem,3.2vw,1.28rem) }
-      .dip-device { padding:6px }
-      .dip-device-header,.dip-device-footer { font-size:.6rem; letter-spacing:.08em }
-      .dip-bank { gap:3px; padding-block:5px }
-      .dip-control { gap:2px; padding:3px 2px }
-      .switch-track { height:clamp(38px,8vh,58px); width:min(88%,25px) }
-      .switch-thumb { height:clamp(15px,2.8vh,21px); left:3px; width:calc(100% - 6px) }
-      .touch-hint { font-size:.7rem }
-      .result-topline { font-size:.6rem; letter-spacing:.08em }
-      .result-mode { display:none }
-      .result-number { font-size:min(20vh,24vw); margin-block:clamp(7px,1.7vh,14px) }
-      .result-equation { display:flex; flex-direction:column; gap:2px }
-      .equation-label,.equation-total { display:none }
-      .result-equation strong { font-size:.81rem; max-width:100% }
-      .binary-row { grid-template-columns:1fr }
-      .binary-row div:last-child { display:none }
-      .zero-note { font-size:.65rem; padding:4px }
-      .address-grid { height:clamp(100px,17.5vh,148px) }
-      .address-button { font-size:clamp(.76rem,3.4vw,1rem) }
-    }
-    @media (max-width:430px) {
-      .wordmark > span:last-child { font-size:0 }
-      .wordmark > span:last-child::after { content:"MR52"; font-size:.82rem }
-    }
-    @media (max-height:560px) {
-      .app-frame { gap:3px; grid-template-rows:32px minmax(0,1fr); padding-block:3px }
-      .calculator-shell { padding-block:5px 4px }
-      .calculator-heading { padding-bottom:4px }
-      .section-kicker,.calculator-subtitle,.touch-hint,.dip-device-footer { display:none }
-      h1 { font-size:1.56rem; margin-bottom:0 }
-      .reset-button { padding-block:4px }
-      .control-panel,.result-panel { padding-block:5px }
-      .panel-label { margin-bottom:4px }
-      h3 { font-size:1.06rem }
-      .dip-device { padding-block:4px }
-      .dip-device-header { padding-bottom:3px }
-      .dip-bank { padding-block:3px }
-      .dip-control { padding-block:2px }
-      .switch-track { height:34px }
-      .switch-thumb { height:13px }
-      .result-number { font-size:min(18vh,11.5vw); margin-block:5px }
-      .result-equation { padding-block:4px }
-      .binary-row { padding-top:4px }
-      .address-panel { padding-top:4px }
-      .address-label { margin-bottom:3px }
-      .address-grid { height:72px }
-      .site-footer { font-size:.55rem; padding-top:2px }
-    }
-    @media (max-height:560px) and (min-width:650px) {
-      .address-grid { grid-template-columns:repeat(11,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)) }
-    }
-    @media (prefers-reduced-motion:reduce) {
-      *,*::before,*::after { transition-duration:.01ms!important }
-    }
+    @media (prefers-reduced-motion:reduce) { *,*::before { transition-duration:.01ms!important } }
   </style>
 </head>
 <body>
-  <main class="app-frame">
-    <div class="ambient ambient-one" aria-hidden="true"></div>
-    <div class="ambient ambient-two" aria-hidden="true"></div>
-    <nav class="topbar" aria-label="Product">
-      <div class="wordmark" aria-label="MR52 address instrument">
-        <span class="wordmark-mark">M</span><span>MR52 / ADDRESS INSTRUMENT</span>
-      </div>
-      <span class="status-chip"><span class="status-dot"></span>LIVE CALCULATION</span>
-    </nav>
-    <section class="calculator-shell" id="calculator" aria-labelledby="page-title">
-      <div class="calculator-heading">
-        <div class="title-block">
-          <p class="section-kicker">MR52 · S1 ADDRESS BANK</p>
-          <h1 id="page-title">Address calculator</h1>
-          <p class="calculator-subtitle">Choose 1–31 to set the bank, or toggle switches 1–5 to calculate the address.</p>
-        </div>
-        <button class="reset-button" id="reset" type="button">RESET TO 1</button>
-      </div>
-      <div class="calculator-grid">
-        <section class="control-panel" aria-labelledby="dip-heading">
-          <div class="panel-label">
-            <div><p>REVERSE LOOKUP</p><h3 id="dip-heading">Toggle the DIP bank</h3></div>
-          </div>
-          <div class="dip-device">
-            <div class="dip-device-header"><span>S1 · ADDRESS</span><span>ON ↑</span></div>
-            <div class="dip-bank" id="dip-bank"></div>
-            <div class="dip-device-footer"><span>OFF</span><span>WEIGHT</span></div>
-          </div>
-          <p class="touch-hint">Each ON position adds its binary weight.</p>
-        </section>
-        <section class="result-panel" aria-live="polite">
-          <div class="result-topline"><span>CALCULATED ADDRESS</span><span class="result-mode">DECIMAL</span></div>
-          <div class="result-number" id="result-number">01</div>
-          <div class="result-equation">
-            <span class="equation-label">ON WEIGHTS</span>
-            <strong id="active-weights">1</strong>
-            <span class="equation-total" id="equation-total">= 1</span>
-          </div>
-          <div class="binary-row">
-            <div><span>BINARY</span><strong id="binary">00001</strong></div>
-            <div><span>READ ORDER</span><strong>S5 → S1</strong></div>
-          </div>
-          <p class="zero-note" id="zero-note">All switches OFF · Address 0</p>
-        </section>
-      </div>
-      <section class="address-panel" aria-labelledby="address-heading">
-        <div class="panel-label address-label">
-          <div><p>FORWARD LOOKUP</p><h3 id="address-heading">Choose an address</h3></div>
-        </div>
-        <div class="address-grid" id="address-grid"></div>
-      </section>
-      <footer class="site-footer">
-        © <span id="copyright-year">2026</span> Andrew Chang
-      </footer>
+  <main class="frame">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">AC</span><span>ADDRESS TOOLS</span></div>
+      <span class="status">SELECT A CALCULATOR</span>
+    </header>
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">PANEL CONFIGURATION DIRECTORY</p>
+      <h1 id="page-title">Address calculators</h1>
+      <p class="intro">Choose the panel type to convert an address into switch positions or calculate an address from the switches.</p>
+      <nav class="directory" aria-label="Address calculators">
+        <a class="tool-card mercury" href="/mr52/">
+          <div class="card-top"><span class="card-id">MERCURY · 01</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+          <div class="card-copy"><h2>MR52 address calculator</h2><p>Mercury S1 five-switch address bank · addresses 1–31</p></div>
+        </a>
+        <a class="tool-card life" href="/nlc/">
+          <div class="card-top"><span class="card-id">NLC · 02</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+          <div class="card-copy"><h2>NLC Life Safety Panel calculator</h2><p>Red-theme five-switch address bank · addresses 1–31</p></div>
+        </a>
+      </nav>
     </section>
+    <footer>© <span id="copyright-year">2026</span> Andrew Chang</footer>
   </main>
-  <script>
-    class MR52AddressCalculator {
-      static weights = [1, 2, 4, 8, 16];
-      constructor(positions) { this.positions = [...positions]; }
-      static fromAddress(address) {
-        const safe = Math.max(0, Math.min(31, Math.trunc(Number(address) || 0)));
-        return new MR52AddressCalculator(this.weights.map(weight => (safe & weight) === weight));
-      }
-      toggle(index) {
-        return new MR52AddressCalculator(this.positions.map((value, i) => i === index ? !value : value));
-      }
-      get address() {
-        return this.positions.reduce((total, isOn, index) =>
-          total + (isOn ? MR52AddressCalculator.weights[index] : 0), 0);
-      }
-      get binary() {
-        return [...this.positions].reverse().map(value => value ? "1" : "0").join("");
-      }
-    }
-
-    const dipBank = document.querySelector("#dip-bank");
-    const addressGrid = document.querySelector("#address-grid");
-    const resultNumber = document.querySelector("#result-number");
-    const activeWeights = document.querySelector("#active-weights");
-    const equationTotal = document.querySelector("#equation-total");
-    const binary = document.querySelector("#binary");
-    const zeroNote = document.querySelector("#zero-note");
-    let calculator = MR52AddressCalculator.fromAddress(1);
-
-    MR52AddressCalculator.weights.forEach((weight, index) => {
-      const button = document.createElement("button");
-      button.className = "dip-control";
-      button.type = "button";
-      button.innerHTML =
-        `<span class="switch-number">${index + 1}</span>` +
-        `<span class="switch-track"><span class="switch-thumb"></span></span>` +
-        `<span class="switch-weight">${weight}</span>`;
-      button.addEventListener("click", () => {
-        calculator = calculator.toggle(index);
-        render();
-      });
-      dipBank.append(button);
-    });
-
-    for (let address = 1; address <= 31; address += 1) {
-      const button = document.createElement("button");
-      button.className = "address-button";
-      button.type = "button";
-      button.textContent = String(address).padStart(2, "0");
-      button.setAttribute("aria-label", `Set address ${address}`);
-      button.addEventListener("click", () => {
-        calculator = MR52AddressCalculator.fromAddress(address);
-        render();
-      });
-      addressGrid.append(button);
-    }
-
-    document.querySelector("#reset").addEventListener("click", () => {
-      calculator = MR52AddressCalculator.fromAddress(1);
-      render();
-    });
-
-    function render() {
-      resultNumber.textContent = String(calculator.address).padStart(2, "0");
-      binary.textContent = calculator.binary;
-      equationTotal.textContent = `= ${calculator.address}`;
-      const weights = calculator.positions
-        .map((isOn, index) => isOn ? MR52AddressCalculator.weights[index] : null)
-        .filter(weight => weight !== null);
-      activeWeights.textContent = weights.length ? weights.join(" + ") : "none";
-      zeroNote.classList.toggle("is-visible", calculator.address === 0);
-
-      [...dipBank.children].forEach((button, index) => {
-        const isOn = calculator.positions[index];
-        button.classList.toggle("is-on", isOn);
-        button.setAttribute("aria-pressed", String(isOn));
-        button.setAttribute(
-          "aria-label",
-          `Switch ${index + 1}, weight ${MR52AddressCalculator.weights[index]}, ${isOn ? "on" : "off"}`
-        );
-      });
-      [...addressGrid.children].forEach((button, index) => {
-        const isSelected = calculator.address === index + 1;
-        button.classList.toggle("is-selected", isSelected);
-        button.setAttribute("aria-pressed", String(isSelected));
-      });
-    }
-
-    document.querySelector("#copyright-year").textContent = String(new Date().getFullYear());
-    render();
-  </script>
+  <script>document.querySelector("#copyright-year").textContent=String(new Date().getFullYear());</script>
 </body>
 </html>
